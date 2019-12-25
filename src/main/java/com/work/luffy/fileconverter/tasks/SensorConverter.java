@@ -32,6 +32,9 @@ public class SensorConverter {
     @Value("${station_code}")
     String station_code;
 
+    @Value("${station_name}")
+    String station_name;
+
     @Value("${input_path}")
     String input_path;
 
@@ -58,14 +61,18 @@ public class SensorConverter {
             String filename = station_code + "-" + dateTimeStr + ".mv1.csv";
             String url = input_path + filename;
 
-            LOGGER.info("checking files from " + dateTimeStr + " to 5 minute before");
+            LOGGER.info("checking files from " + dateTimeStr);
 
             List<String> inputData = csVreader.read(url);
 
             if (inputData.size() >=1 ){
                 String timeString = outputFileNameFormat.format(checkTime);
+                timeString += "00";
+                System.out.println(timeString);
                 String output_url = output_path + filename.substring(0, filename.length() - 4) + ".txt";
-                txtWriter.writeToFile(dataConverter.dataConvert(inputData, timeString), output_url);
+                System.out.println(output_url);
+                String output_new = output_path + station_name + "_" +  timeString  + ".txt";
+                txtWriter.writeToFile(dataConverter.dataConvert(inputData, timeString), output_new);
             }
         }
     }
